@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/" />
+    <title>Tops App</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Common Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background: #0F0F0F;
+            color: white;
+            overflow-x: hidden;
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 20px;
+            background: #1A1A1A;
+            height: 100vh;
+            position: relative;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-top: env(safe-area-inset-top);
+        }
+        .coin-display {
+            background: #444;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            color: #FFD700;
+            margin-bottom: 20px;
+        }
+        .missions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .mission {
+            background: #333;
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .mission h3 {
+            font-size: 18px;
+            color: #fff;
+        }
+        .mission button {
+            background: #4ECDC4;
+            color: #000;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .mission button:disabled {
+            background: #888;
+            cursor: not-allowed;
+        }
+        /* Invite Section */
+        .invite-section {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .invite-section h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .invite-section input {
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            width: 70%;
+            font-size: 18px;
+        }
+        .invite-section button {
+            background: #4ECDC4;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        /* Wallet Section */
+        .wallet-section {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .wallet-section h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .wallet-section .wallet-balance {
+            font-size: 20px;
+            color: #FFD700;
+            margin: 10px 0;
+        }
+        .wallet-section button {
+            background: #4ECDC4;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #2A2A2A;
+            padding: 15px;
+            padding-bottom: calc(15px + env(safe-area-inset-bottom));
+            display: flex;
+            justify-content: space-around;
+            z-index: 100;
+        }
+        .nav-item {
+            text-align: center;
+            color: #888;
+            text-decoration: none;
+            font-size: 12px;
+            padding: 5px;
+        }
+        .nav-item.active {
+            color: #4ECDC4;
+        }
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        .content {
+            display: none;
+        }
+        .content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div id="home" class="content active">
+            <div class="header">
+                <h1>TOPS</h1>
+            </div>
+            <div class="coin-display">
+                Your Coins: <span id="coinBalance">0</span>
+            </div>
+            <div class="missions">
+                <div class="mission">
+                    <h3>Follow Us on Telegram</h3>
+                    <a href="https://t.me/freeganeplay" target="_blank">
+                        <button id="telegramButton">Follow</button>
+                    </a>
+                </div>
+                <div class="mission">
+                    <h3>Subscribe to Our YouTube Channel</h3>
+                    <a href="https://youtube.com/@tops-k8w?si=O5ym69VXhVjTUpzA" target="_blank">
+                        <button id="youtubeButton">Subscribe</button>
+                    </a>
+                </div>
+                <div class="mission">
+                    <h3>Follow Us on Instagram</h3>
+                    <a href="https://www.instagram.com/mrahmadraza47/profilecard/?igsh=MTN2cDltdWc2NDF4dw==" target="_blank">
+                        <button id="instagramButton">Follow</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div id="friends" class="content">
+            <div class="invite-section">
+                <h2>Invite Friends</h2>
+                <p>Your Referral Code: <span id="userReferralCode">6LAU94VV</span></p>
+                <input type="text" id="friendCode" placeholder="Enter Code">
+                <button onclick="enterReferralCode()">Submit</button>
+            </div>
+        </div>
+        <div id="wallet" class="content">
+            <div class="wallet-section">
+                <h2>My Wallet</h2>
+                <div class="wallet-balance" id="walletBalance">
+                    Your Wallet Balance: 0 Coins
+                </div>
+                <button onclick="transferCoins()">Transfer Coins</button>
+            </div>
+        </div>
+        <nav class="navigation">
+            <a href="#home" class="nav-item active" onclick="switchTab('home')">
+                <i class="fas fa-home nav-icon"></i>
+                <div>Home</div>
+            </a>
+            <a href="#friends" class="nav-item" onclick="switchTab('friends')">
+                <i class="fas fa-user-friends nav-icon"></i>
+                <div>Friends</div>
+            </a>
+            <a href="#wallet" class="nav-item" onclick="switchTab('wallet')">
+                <i class="fas fa-wallet nav-icon"></i>
+                <div>Wallet</div>
+            </a>
+        </nav>
+    </div>
+
+    <script>
+        function switchTab(tabId) {
+            const tabs = document.querySelectorAll('.content');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            document.getElementById(tabId).classList.add('active');
+
+            // Update active state of navigation items
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.classList.remove('active');
+            });
+
+            document.querySelector(`.nav-item[href='#${tabId}']`).classList.add('active');
+        }
+
+        // Example: Mission button completion logic
+        document.getElementById('telegramButton').addEventListener('click', function() {
+            const button = this;
+            button.disabled = true;
+            button.textContent = "Loading...";
+            setTimeout(function() {
+                button.textContent = "Completed";
+                document.getElementById("coinBalance").textContent = 300; // Add 300 coins
+            }, 5000);
+        });
+
+        document.getElementById('youtubeButton').addEventListener('click', function() {
+            const button = this;
+            button.disabled = true;
+            button.textContent = "Loading...";
+            setTimeout(function() {
+                button.textContent = "Completed";
+                document.getElementById("coinBalance").textContent = 300; // Add 300 coins
+            }, 5000);
+        });
+
+        document.getElementById('instagramButton').addEventListener('click', function() {
+            const button = this;
+            button.disabled = true;
+            button.textContent = "Loading...";
+            setTimeout(function() {
+                button.textContent = "Completed";
+                document.getElementById("coinBalance").textContent = 300; // Add 300 coins
+            }, 5000);
+        });
+    </script>
+</body>
+</
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Login - Profile Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        h1 {
+            color: #333;
+        }
+        .g_id_signin {
+            margin-top: 20px;
+        }
+        #user-info {
+            margin-top: 20px;
+            display: none;
+        }
+        #user-info img {
+            border-radius: 50%;
+            margin-top: 10px;
+        }
+    </style>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+        function handleCredentialResponse(response) {
+            // Decode the token to get user information
+            const data = jwt_decode(response.credential);
+            console.log("User Info:", data);
+
+            // Show user details on the page
+            document.getElementById("user-info").style.display = "block";
+            document.getElementById("user-info").innerHTML = `
+                <h2>Welcome, ${data.name}</h2>
+                <p>Email: ${data.email}</p>
+                <img src="${data.picture}" alt="Profile Picture" width="100">
+            `;
+            document.getElementById("login-button").style.display = "none";  // Hide login button
+        }
+
+        // Load the JWT Decode library
+        function loadScript(url) {
+            const script = document.createElement('script');
+            script.src = url;
+            document.body.appendChild(script);
+        }
+
+        loadScript("https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js");
+    </script>
+</head>
+<div id="wallet-connect" class="content">
+    <div class="wallet-section">
+        <h2>Connect Your Wallet</h2>
+        <p>Connect your wallet to start receiving coins.</p>
+        <input type="text" id="walletAddress" placeholder="Enter Wallet Address" />
+        <button onclick="connectWallet()">Connect Wallet</button>
+        <div id="walletStatus"></div>
+    </div>
+</div>
+<!-- Current wallet section -->
+<div id="wallet-connect" class="content">
+    <div class="wallet-section">
+        <h2>Connect Your Wallet</h2>
+        <p>Click below to connect your wallet</p>
+        <button onclick="redirectToWalletConnect()">Connect Wallet</button>
+    </div>
+</div>
